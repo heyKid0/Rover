@@ -3,6 +3,17 @@
 #include <RF24.h>
 #include <Servo.h>
 
+
+
+//Progamme permetant de controler la direction du rover en prennant comme entrée analogique 
+//les mouvements du joystick pour les transferer au pont en H (permetant au Rover de se mouvoire)
+
+
+
+
+
+
+
  
 int  Right_X_J, Right_Y_J, RightButton, Left_X_J, Left_Y_J, LeftButton;
 
