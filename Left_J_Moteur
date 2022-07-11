@@ -1,0 +1,160 @@
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+#include <Servo.h>
+
+ 
+int  Right_X_J, Right_Y_J, RightButton, Left_X_J, Left_Y_J, LeftButton;
+
+char receivedData[32] = "";
+
+int motorSpeedA, motorSpeedB = 0, diff = 0;
+
+
+
+int In1 = 2;
+int In2 = 3;
+int ENA = 5;
+int In3 = 4;
+int In4 = 7;
+int ENB = 6;
+
+
+void setup() {
+  
+  // Initialisation du port série
+  Serial.begin(9600);
+
+  // Configuration des ports en mode "sortie"
+  pinMode(In1, OUTPUT);
+  pinMode(In2, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(In3, OUTPUT);
+  pinMode(In4, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+ 
+}
+
+void loop() {
+
+
+  //Recupere information du Joystick Gauche
+
+
+  Right_X_J   = analogRead(A4);  //Pemet de lire la valeur X-axis sur Joystick droit
+  Right_Y_J   = analogRead(A5);   
+  RightButton = digitalRead(2);   
+  Left_X_J    = analogRead(A0);
+  Left_Y_J    = analogRead(A1);
+  LeftButton  = digitalRead(3);
+
+  //Affiche information du Joystick Gauche sur le moniteur
+
+ Serial.print(" Right_X: ");
+  Serial.print(Right_X_J);
+  Serial.print(" /  Right_Y: ");
+  Serial.print(Right_Y_J);
+  Serial.print(" /  Left_X: ");
+  Serial.print(Left_X_J);
+  Serial.print(" /  Left_Y: ");
+  Serial.println(Left_Y_J);
+  
+  delay(20);
+
+
+//Faire avancer le Rover
+
+  if (Left_X_J < 470) {
+
+    digitalWrite(In1, HIGH); 
+    digitalWrite(In2, LOW);  
+    digitalWrite(In3, LOW);  
+    digitalWrite(In4, HIGH); 
+
+    motorSpeedA = motorSpeedB = map(Left_X_J, 470, 0, 0, 255);
+  }
+  
+//Faire reculer le Rover  
+
+  else if (Left_X_J > 550) {
+    digitalWrite(In1, LOW);
+    digitalWrite(In2, HIGH);
+    digitalWrite(In3, HIGH);
+    digitalWrite(In4, LOW);
+
+    motorSpeedA = motorSpeedB = map(Left_X_J, 550, 1023, 0, 255); 
+  }
+  
+ else {
+    motorSpeedA = motorSpeedB = diff = 0;
+  }
+
+
+//Faire tourner le Rover à Droite par une difference de vistesse entre les moteurs
+  if (Left_Y_J < 470) {
+    diff = map(Left_Y_J, 470, 0, 0, 255);
+    motorSpeedA = motorSpeedA + diff;
+    motorSpeedB = motorSpeedB - diff;
+    
+    if (motorSpeedA > 255) {
+      motorSpeedA = 180;
+    }
+    if (motorSpeedB < 0) {
+      motorSpeedB = 0;
+    }
+
+  }
+
+//Faire tourner le Rover à Gauche par une difference de vistesse entre les moteurs
+  if (Left_Y_J > 550) {
+    diff = map(Left_Y_J, 550, 1023, 0, 255);
+    motorSpeedB = motorSpeedB + diff;
+    motorSpeedA = motorSpeedA - diff;
+
+    if (motorSpeedB > 255) {
+      motorSpeedB = 180;
+    }
+    if (motorSpeedA < 0) {
+      motorSpeedA = 0;
+    }
+    
+  }
+  
+//Faire tourner le Rover à droite par rapport à son centre
+  if (Left_Y_J < 470 && 470 < Left_X_J && Left_X_J < 550) {
+    digitalWrite(In1, HIGH);
+    digitalWrite(In2, LOW);
+    digitalWrite(In3, HIGH);
+    digitalWrite(In4, LOW);
+
+    motorSpeedA = motorSpeedB = map(Left_Y_J, 470, 0, 0, 255);    
+  }
+
+//Faire tourner le Rover à gauche par rapport à son centre
+
+  if (Left_Y_J > 550 && 470 < Left_X_J && Left_X_J < 550) {
+    digitalWrite(In1, LOW);
+    digitalWrite(In2, HIGH);
+    digitalWrite(In3, LOW);
+    digitalWrite(In4, HIGH);
+
+    motorSpeedA = motorSpeedB = map(Left_Y_J, 550, 1023, 0, 255); 
+  }
+
+ // Pour eviter le bourdonement des moteurs à trop faible vitesse
+
+  if (motorSpeedA < 140) {
+    motorSpeedA = 0;
+  }
+  if (motorSpeedB < 140) {
+    motorSpeedB = 0;
+  }
+
+  analogWrite(ENA, motorSpeedA);
+  analogWrite(ENB, motorSpeedB);
+}
+
+
+
+
