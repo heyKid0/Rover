@@ -38,16 +38,21 @@ const char CENTRE_DROITE    =  'H';
 
     //Mouvement Servo
 
-const char SERVO_0 =    ' ';
-const char SERVO_45 =   ' ';
-const char SERVO_90 =   ' ';
-const char SERVO_135 =  ' ';
-const char SERVO_180 =  ' ';
+const char SERVO_0 =    'I';
+const char SERVO_45 =   'J';
+const char SERVO_90 =   'K';
+const char SERVO_135 =  'L';
+const char SERVO_180 =  'M';
+
+    //Mode Lent / Rapide
+const char LENT =    'N';
+const char RAPIDE =  'O';
 
 //Variables du programmes
 
 int pos = 90;        // Position a l'allumage du Rover (90°)
 char BluetoothData;  // Date recu par le communication bluetooth 
+char mode;
 
 //*************************************************************//
                   // SETUP //
@@ -98,6 +103,7 @@ void loop() {
 
     if(BluetoothData=='1'){
     configurerSensDeRotationPont(MARCHE_AVANT);
+    //configurerModeLentRapide(mode)
     }
    
     else if(BluetoothData=='3'){
@@ -151,7 +157,18 @@ void loop() {
     else if(BluetoothData=='E'){
     myservo.write(0);
     }
-   
+
+              //*********************//
+                  // Mode //
+              //*********************//
+    else if (BluetoothData=='L'){
+      mode = LENT;
+    }
+
+    else if (BluetoothData=='R'){
+      mode = RAPIDE;
+    } 
+
     else{
     digitalWrite(borneIN1, LOW);                 
     digitalWrite(borneIN2, LOW);                  
@@ -182,6 +199,25 @@ void loop() {
     
 */
 
+void configurerModeLentRapide(char modeLentRapide) {
+
+    if(modeLentRapide == LENT) {
+      changeVitesseMoteurPontA(150);
+      changeVitesseMoteurPontB(150);
+    }
+    else if(modeLentRapide == RAPIDE){
+      changeVitesseMoteurPontA(255);
+      changeVitesseMoteurPontB(255);
+    }
+    else {
+      changeVitesseMoteurPontA(0);
+      changeVitesseMoteurPontB(0);
+
+    }
+
+
+}
+
 void configurerSensDeRotationPont(char sensDeRotation) {
 
   if(sensDeRotation == MARCHE_AVANT) {
@@ -191,8 +227,7 @@ void configurerSensDeRotationPont(char sensDeRotation) {
     digitalWrite(borneIN3, HIGH);                 
     digitalWrite(borneIN4, LOW); 
 
-    changeVitesseMoteurPontA(220); 
-    changeVitesseMoteurPontB(220);  
+    configurerModeLentRapide(mode); 
   }
   
   if(sensDeRotation == MARCHE_ARRIERE) {
@@ -202,18 +237,17 @@ void configurerSensDeRotationPont(char sensDeRotation) {
     digitalWrite(borneIN3, LOW);             
     digitalWrite(borneIN4, HIGH);               
     
-    changeVitesseMoteurPontA(220); 
-    changeVitesseMoteurPontB(220);
+   configurerModeLentRapide(mode);
   }
 
-   if(sensDeRotation ==   AVANT_GAUCHE) {
+   if(sensDeRotation ==   AVANT_GAUCHE ) {
 
     digitalWrite(borneIN1, HIGH);                 
     digitalWrite(borneIN2, LOW);                  
     digitalWrite(borneIN3, HIGH);                 
     digitalWrite(borneIN4, LOW); 
-
-    changeVitesseMoteurPontA(150); 
+    
+    changeVitesseMoteurPontA(110); 
     changeVitesseMoteurPontB(220);  
   }
 
@@ -225,7 +259,7 @@ void configurerSensDeRotationPont(char sensDeRotation) {
     digitalWrite(borneIN4, LOW); 
 
     changeVitesseMoteurPontA(220); 
-    changeVitesseMoteurPontB(150);  
+    changeVitesseMoteurPontB(110);
   }
 
     if(sensDeRotation ==   ARRIERE_GAUCHE) {
@@ -235,7 +269,7 @@ void configurerSensDeRotationPont(char sensDeRotation) {
     digitalWrite(borneIN3, LOW);                 
     digitalWrite(borneIN4, HIGH); 
 
-    changeVitesseMoteurPontA(150); 
+    changeVitesseMoteurPontA(110); 
     changeVitesseMoteurPontB(220);  
   }
 
@@ -247,7 +281,7 @@ void configurerSensDeRotationPont(char sensDeRotation) {
     digitalWrite(borneIN4, HIGH); 
 
     changeVitesseMoteurPontA(220); 
-    changeVitesseMoteurPontB(150);  
+    changeVitesseMoteurPontB(110);  
   }
 
   if(sensDeRotation == CENTRE_GAUCHE) {
@@ -257,8 +291,7 @@ void configurerSensDeRotationPont(char sensDeRotation) {
     digitalWrite(borneIN3, HIGH);                 
     digitalWrite(borneIN4, LOW);     
 
-    changeVitesseMoteurPontA(180); 
-    changeVitesseMoteurPontB(180);              
+    configurerModeLentRapide(mode);             
   }
 
     if(sensDeRotation == CENTRE_DROITE) {
@@ -268,8 +301,7 @@ void configurerSensDeRotationPont(char sensDeRotation) {
     digitalWrite(borneIN3, LOW);                 
     digitalWrite(borneIN4, HIGH);  
 
-    changeVitesseMoteurPontA(180); 
-    changeVitesseMoteurPontB(180);                             
+   configurerModeLentRapide(mode);                           
   } 
 }
 
