@@ -25,7 +25,7 @@ Servo myservo;
 
     //Mouvements Moteur
 
-        // On defini des constante pour les directions
+      // On defini des constante pour les directions
 
 const char MARCHE_AVANT     =  'A';            
 const char MARCHE_ARRIERE   =  'B';      
@@ -87,57 +87,70 @@ void loop() {
 
  if (BT.available())
  {
-    BluetoothData = BT.read();    //Get next character from bluetooth
-    Serial.write(BluetoothData);  //ecrire le car sur le PC
+    BluetoothData = BT.read();    //Recupere le caractere qui vient du module bluetooth 
+    Serial.write(BluetoothData);  //Affiche le caractere sur le moniteur Serie (Utile pour debug)
 
+  //Associe une action en fonction du caractere recu//
+
+              //*********************//
+                  // Deplacement //
+              //*********************//
 
     if(BluetoothData=='1'){
-   configurerSensDeRotationPont(MARCHE_AVANT);
+    configurerSensDeRotationPont(MARCHE_AVANT);
     }
    
     else if(BluetoothData=='3'){
-   configurerSensDeRotationPont(MARCHE_ARRIERE);
+    configurerSensDeRotationPont(MARCHE_ARRIERE);
     }
 
     else if(BluetoothData=='4'){
-   configurerSensDeRotationPont(CENTRE_DROITE);
+    configurerSensDeRotationPont(CENTRE_DROITE);
     }
 
-   else if(BluetoothData=='2'){
-   configurerSensDeRotationPont(CENTRE_GAUCHE);
+    else if(BluetoothData=='2'){
+    configurerSensDeRotationPont(CENTRE_GAUCHE);
     }
 
-   else if(BluetoothData=='8'){
-   configurerSensDeRotationPont(AVANT_DROITE);
+    else if(BluetoothData=='8'){
+    configurerSensDeRotationPont(AVANT_DROITE);
     }
 
-   else if(BluetoothData=='5'){
-   configurerSensDeRotationPont(AVANT_GAUCHE);
+    else if(BluetoothData=='5'){
+    configurerSensDeRotationPont(AVANT_GAUCHE);
     }
 
-   else if(BluetoothData=='7'){
-   configurerSensDeRotationPont(ARRIERE_DROITE);
+    else if(BluetoothData=='7'){
+    configurerSensDeRotationPont(ARRIERE_DROITE);
     }
    
-   else if(BluetoothData=='6'){
-   configurerSensDeRotationPont(ARRIERE_GAUCHE);
+    else if(BluetoothData=='6'){
+    configurerSensDeRotationPont(ARRIERE_GAUCHE);
     }
-    
+
+              //*********************//
+                  // ServoMotor //
+              //*********************//
+
     else if(BluetoothData=='A'){
-   myservo.write(180);
-   }
+    myservo.write(180);
+    }
+
     else if(BluetoothData=='B'){
     myservo.write(135);
- }    
+    }  
+
     else if(BluetoothData=='C'){
-   myservo.write(90);
-}
-   else if(BluetoothData=='D'){
-   myservo.write(45);
-}
-   else if(BluetoothData=='E'){
+    myservo.write(90);
+    }
+
+    else if(BluetoothData=='D'){
+    myservo.write(45);
+    }
+
+    else if(BluetoothData=='E'){
     myservo.write(0);
- }
+    }
    
     else{
     digitalWrite(borneIN1, LOW);                 
@@ -145,14 +158,29 @@ void loop() {
     digitalWrite(borneIN3, LOW);                 
     digitalWrite(borneIN4, LOW);
     }
-
- }  
- 
-
-  
+ }   
 }
 
-// Fonction : Direction                                        
+//*************************************************************//
+                  // FONCTIONS //
+//*************************************************************//
+
+              //*********************//
+                  // Direction //
+              //*********************//
+                                   
+/*Il s'agit de configurer 8 fonctions de direction :
+
+    -Marche avant
+    -Marche arriere
+    -Tourner a droite (en avancant)
+    -Tourner a gauche (en avancant)
+    -Tourner a droite (en reculant)
+    -Tourner a gauche (en reculant)    
+    -Tourner a droite par rapport au centre de gravite
+    -Tourner a gauche par rapport au centre de gravite
+    
+*/
 
 void configurerSensDeRotationPont(char sensDeRotation) {
 
@@ -245,7 +273,10 @@ void configurerSensDeRotationPont(char sensDeRotation) {
   } 
 }
 
-// Fonction : changeVitesse                                            
+              //*********************//
+                  // Vitesse //
+              //*********************//
+                                                                        
 
 void changeVitesseMoteurPontA(int nouvelleVitesseA) {
   
