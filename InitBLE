@@ -1,0 +1,26 @@
+// http://a110a.free.fr/SPIP172/article.php3?id_article=150
+
+#include <SoftwareSerial.h>
+SoftwareSerial HC06(10, 11); // RX10 Arduino relier à TX du module
+                             // TX11 Arduino relier à RX du module
+//////////////////////////////////
+int unsigned long vitesse = 9600; //MODIFIER en meme temps le moniteur!
+////////////////////////////////
+
+void setup()
+{
+  Serial.begin(vitesse);//Pour le moniteur
+  Serial.println("Enter AT commands:");//Sur le moniteur
+  HC06.begin(vitesse);//Pour le module
+}
+void loop()
+{ //On alterne entre lecture du module puis ecriture sur moniteur
+  while (HC06.available()) {        // If HC-06 has data
+    Serial.write(HC06.read());
+    // Send the data to Serial monitor
+  }
+  while (Serial.available()) {      // If Serial monitor has data
+    HC06.write(Serial.read());
+    Serial.println();    //Mise en page , à ameliorer!
+  }
+}
