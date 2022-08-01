@@ -158,9 +158,9 @@ void loop() {
     myservo.write(0);
     }
 
-              //*********************//
-                  // Mode //
-              //*********************//
+              //**************************//
+                  // Mode Lent ou Rapide //
+              //**************************//
     else if (BluetoothData=='L'){
       mode = LENT;
     }
@@ -198,25 +198,6 @@ void loop() {
     -Tourner a gauche par rapport au centre de gravite
     
 */
-
-void configurerModeLentRapide(char modeLentRapide) {
-
-    if(modeLentRapide == LENT) {
-      changeVitesseMoteurPontA(150);
-      changeVitesseMoteurPontB(150);
-    }
-    else if(modeLentRapide == RAPIDE){
-      changeVitesseMoteurPontA(255);
-      changeVitesseMoteurPontB(255);
-    }
-    else {
-      changeVitesseMoteurPontA(0);
-      changeVitesseMoteurPontB(0);
-
-    }
-
-
-}
 
 void configurerSensDeRotationPont(char sensDeRotation) {
 
@@ -303,6 +284,31 @@ void configurerSensDeRotationPont(char sensDeRotation) {
 
    configurerModeLentRapide(mode);                           
   } 
+}
+
+              //******************************//
+                  // Mode Lent ou Rapide //
+              //*****************************//
+
+/*On definit une fonction qui va nous pemettre de changer la PWM des moteurs :
+  -Mode Lent PWM    : 150
+  -Mode Rapide PWM  : 255
+*/
+
+void configurerModeLentRapide(char modeLentRapide) {
+
+    if(modeLentRapide == LENT) {
+      changeVitesseMoteurPontA(150);
+      changeVitesseMoteurPontB(150);
+    }
+    else if(modeLentRapide == RAPIDE){
+      changeVitesseMoteurPontA(255);
+      changeVitesseMoteurPontB(255);
+    }
+    else {
+      changeVitesseMoteurPontA(0);
+      changeVitesseMoteurPontB(0);
+    }
 }
 
               //*********************//
